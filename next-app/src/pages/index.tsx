@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { NextPage } from "next/types";
 import React from "react";
 import { Typography } from "@/components/ui/typography";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectKitButton } from "connectkit";
 
 const HomePage: NextPage = () => {
   return (
@@ -28,6 +30,9 @@ const HomePage: NextPage = () => {
       >
         Connect Wallet
       </Button>
+      <ConnectKitButton />
+
+      <ConnectButton />
     </PageLayout>
   );
 };

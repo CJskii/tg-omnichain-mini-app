@@ -18,6 +18,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/footer";
 
+import { Web3Provider } from "@/Web3Provider";
+
 const client = new QueryClient();
 
 const getSiweMessageOptions: GetSiweMessageOptions = () => ({
@@ -34,28 +36,30 @@ export const monsterrat = Montserrat({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiProvider config={config}>
-      <SessionProvider session={pageProps.session}>
-        <QueryClientProvider client={client}>
-          <RainbowKitSiweNextAuthProvider
-            getSiweMessageOptions={getSiweMessageOptions}
-          >
-            <RainbowKitProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </ThemeProvider>
-            </RainbowKitProvider>
-          </RainbowKitSiweNextAuthProvider>
-        </QueryClientProvider>
-      </SessionProvider>
-    </WagmiProvider>
+    <Web3Provider>
+      <WagmiProvider config={config}>
+        <SessionProvider session={pageProps.session}>
+          <QueryClientProvider client={client}>
+            <RainbowKitSiweNextAuthProvider
+              getSiweMessageOptions={getSiweMessageOptions}
+            >
+              <RainbowKitProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </ThemeProvider>
+              </RainbowKitProvider>
+            </RainbowKitSiweNextAuthProvider>
+          </QueryClientProvider>
+        </SessionProvider>
+      </WagmiProvider>
+    </Web3Provider>
   );
 }
 
