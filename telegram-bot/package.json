@@ -2,19 +2,31 @@
   "name": "omni-transfer-bot",
   "version": "1.0.0",
   "author": "",
-  "main": "dist/index.js",
+  "main": "dist/server/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx ./src/index.ts",
-    "start": "tsc && node dist/index.js"
+    "dev:bot": "tsx ./src/bot/index.ts",
+    "dev:server": "tsx ./src/server/index.ts",
+    "dev": "npm-run-all --parallel dev:bot dev:server",
+    "start": "tsc && npm-run-all --parallel start:bot start:server",
+    "start:bot": "bun dist/bot/index.js",
+    "start:server": "bun dist/server/index.js"
   },
   "dependencies": {
+    "@grammyjs/auto-chat-action": "0.1.1",
+    "@grammyjs/types": "3.11.0",
+    "@types/socket.io": "^3.0.2",
+    "concurrently": "^9.0.1",
     "dotenv": "^16.4.5",
-    "grammy": "^1.30.0"
+    "express": "^4.21.0",
+    "grammy": "^1.30.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "socket.io": "^4.8.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "npm-run-all": "^4.1.5"
   }
 }
