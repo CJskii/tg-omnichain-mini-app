@@ -24,7 +24,7 @@ const config: serverConfigType = {
     web3BridgeBaseUrl: "http://localhost:3002", // web3 bridge frontend URL
   },
   production: {
-    allowedOrigins: ["web3 bridge frontend URL"],
+    allowedOrigins: [process.env.TELEGRAM_APP_EXTERNAL_URL || ""],
     port: process.env.PORT || 3001,
     callbackBaseUrl: process.env.NODE_SERVER_URL, // callback server URL
     sourceBaseUrl: process.env.NODE_SERVER_URL, // tx source json server URL
