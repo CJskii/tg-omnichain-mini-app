@@ -1,21 +1,18 @@
 import { useState, useEffect } from "react";
-
 import { PageLayout } from "@/components/page-layout";
 import { NextPage } from "next/types";
-import React from "react";
-import { Typography } from "@/components/ui/typography";
-import { ConnectWalletButton } from "@/components/ui/connect-button";
-import { useAccount } from "wagmi";
 
 import { WriteContract, WriteContractData } from "@/components/write-contract";
 import { SignMessage, SignMessageProps } from "@/components/sign-message";
+import { Typography } from "@/components/ui/typography";
+import { ConnectWalletButton } from "@/components/ui/connect-button";
 
+import { useAccount } from "wagmi";
 import { getSchemaError, sendEvent } from "@/utils";
 import { JsonEditor } from "json-edit-react";
 
 const HomePage: NextPage = () => {
   const { isConnected } = useAccount();
-  const { chainId } = useAccount();
   const [transactionData, setTransactionData] = useState<WriteContractData>();
   const [signMessageData, setSignMessageData] = useState<SignMessageProps>();
   const [callbackEndpoint, setCallbackEndpoint] = useState("");
@@ -59,12 +56,22 @@ const HomePage: NextPage = () => {
 
   return (
     <PageLayout title="Homepage" description="Welcome to next-web-template">
+      <Typography className="text-center">
+        <span className="font-bold">{botName} </span>is requesting to confirm
+        this transaction
+      </Typography>
       <ConnectWalletButton />
       {isConnected && !schemaError && (transactionData || signMessageData) && (
         <>
           {operationType === "transaction" && transactionData && uid && (
             <div className="flex flex-col justify-center items-center gap-8">
-              <Typography>{transactionData.chainId}</Typography>
+              <JsonEditor
+                restrictEdit={true}
+                restrictAdd={true}
+                restrictDelete={true}
+                collapse
+                data={transactionData}
+              />
               <WriteContract
                 uid={uid}
                 chainId={transactionData.chainId}
@@ -79,18 +86,12 @@ const HomePage: NextPage = () => {
                   })
                 }
               />
-              <JsonEditor
-                restrictEdit={true}
-                restrictAdd={true}
-                restrictDelete={true}
-                collapse={false}
-                data={transactionData}
-              />
             </div>
           )}
           {operationType === "signature" && signMessageData && uid && (
             <div className="flex flex-col justify-center items-center gap-8">
               <Typography>{signMessageData.domain.chainId}</Typography>
+              <JsonEditor restrictEdit={true} data={signMessageData} collapse />
               <SignMessage
                 uid={uid}
                 domain={signMessageData.domain}
@@ -104,7 +105,6 @@ const HomePage: NextPage = () => {
                   })
                 }
               />
-              <JsonEditor restrictEdit={true} data={signMessageData} collapse />
             </div>
           )}
         </>
