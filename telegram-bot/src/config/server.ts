@@ -6,7 +6,7 @@ interface serverConfigType {
     port: number | string;
     callbackBaseUrl: string;
     sourceBaseUrl: string;
-    frontendBaseUrl: string;
+    web3BridgeBaseUrl: string;
   };
 }
 
@@ -21,14 +21,14 @@ const config: serverConfigType = {
     port: 3001,
     callbackBaseUrl: "http://localhost:3001", // callback server URL
     sourceBaseUrl: "http://localhost:3001", // tx source json server URL
-    frontendBaseUrl: "http://localhost:3002", // web3 bridge frontend URL
+    web3BridgeBaseUrl: "http://localhost:3002", // web3 bridge frontend URL
   },
   production: {
     allowedOrigins: ["web3 bridge frontend URL"],
     port: process.env.PORT || 3001,
-    callbackBaseUrl: "https://your-production-domain.com", // callback server URL
-    sourceBaseUrl: "https://your-production-domain.com", // tx source json server URL
-    frontendBaseUrl: "https://your-frontend-domain.com", // web3 bridge frontend URL
+    callbackBaseUrl: process.env.NODE_SERVER_URL, // callback server URL
+    sourceBaseUrl: process.env.NODE_SERVER_URL, // tx source json server URL
+    web3BridgeBaseUrl: process.env.BRIDGE_URL, // web3 bridge frontend URL
   },
 };
 

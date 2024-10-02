@@ -49,7 +49,7 @@ export function generateBridgeUrl(
   const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/${uid}?txType=${txType}`;
 
   return `${
-    serverConfig.frontendBaseUrl
+    serverConfig.web3BridgeBaseUrl
   }/?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
     sourceUrl
   )}&callback=${encodeURIComponent(callbackUrl)}`;
