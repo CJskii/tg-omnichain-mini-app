@@ -18,6 +18,12 @@ const setBotCommands = async () => {
 };
 
 bot.command("start", async (ctx) => {
+  console.log(
+    constructUrl({
+      botName: "OmniTransferBot",
+      uid: ctx.chat?.id.toString(),
+    })
+  );
   await ctx.reply(
     `Welcome to the Omnichain bot! 🎮\nUse the button below to start the /app or check /help for more options.`,
     {
@@ -81,7 +87,7 @@ const startBot = async () => {
     bot.start();
     console.log("Bot started!");
 
-    console.log(constructUrl({ botName: GAME_NAME, uid: "123" }));
+    // console.log(constructUrl({ botName: GAME_NAME, uid: "123" }));
   } catch (error) {
     console.error("Error starting bot:", error);
   }

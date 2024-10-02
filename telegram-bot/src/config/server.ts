@@ -15,13 +15,13 @@ const config: serverConfigType = {
     allowedOrigins: [
       "http://localhost:3000",
       "https://omni.loca.lt",
-      "http://localhost:5173",
-      "https://rttwhwmrbr.eu.loclx.io",
+      "http://localhost:3002",
+      "https://cowbird-fun-ostrich.ngrok-free.app",
     ],
     port: 3001,
     callbackBaseUrl: "http://localhost:3001", // callback server URL
     sourceBaseUrl: "http://localhost:3001", // tx source json server URL
-    frontendBaseUrl: "http://localhost:5173", // web3 bridge frontend URL
+    frontendBaseUrl: "http://localhost:3002", // web3 bridge frontend URL
   },
   production: {
     allowedOrigins: ["web3 bridge frontend URL"],

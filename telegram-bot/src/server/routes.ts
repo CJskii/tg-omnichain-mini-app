@@ -5,6 +5,7 @@ import { generateBridgeUrl, generateTransactionJson } from "./transaction";
 export function initializeRoutes(app: Express, io: SocketServer) {
   app.post("/api/generate-bridge-url", (req, res) => {
     const { botName, txType, uid } = req.body;
+    console.log({ botName: botName, txType: txType, uid: uid });
 
     const bridgeUrl = generateBridgeUrl(botName, txType, uid);
     console.log(`Generated bridge URL: ${bridgeUrl}`);

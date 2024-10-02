@@ -14,13 +14,13 @@ const config: botConfigType = {
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_API_KEY,
     TELEGRAM_APP_EXTERNAL_URL: process.env.TELEGRAM_APP_EXTERNAL_URL,
     TELEGRAM_APP_INTERNAL_URL: "https://t.me/OmniTransferBot",
-    APP_NAME: "minter",
+    APP_NAME: "OmniTransferBot",
   },
   production: {
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_API_KEY,
     TELEGRAM_APP_EXTERNAL_URL: process.env.TELEGRAM_APP_EXTERNAL_URL,
     TELEGRAM_APP_INTERNAL_URL: "https://t.me/OmniTransferBot",
-    APP_NAME: "minter",
+    APP_NAME: "OmniTransferBot",
   },
 };
 
