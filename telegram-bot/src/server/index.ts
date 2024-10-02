@@ -3,15 +3,13 @@ import { createServer } from "http";
 import { initializeRoutes } from "./routes";
 import { initializeSocket } from "../utils/websocket";
 import cors from "cors";
+import { serverConfig } from "../config/server";
+import "dotenv/config";
 
 const app = express();
 const server = createServer(app);
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://omni.loca.lt",
-  "http://localhost:5173",
-];
+const allowedOrigins = serverConfig.allowedOrigins;
 
 const corsOptions = {
   origin: (
@@ -43,7 +41,8 @@ const io = initializeSocket(server, {
 
 initializeRoutes(app, io);
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+server.listen(serverConfig.port, () => {
+  console.log(
+    `Server is running on port ${serverConfig.port} in ${process.env.NODE_ENV} mode.`
+  );
 });

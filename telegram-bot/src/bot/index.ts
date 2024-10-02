@@ -1,11 +1,10 @@
 import { Bot, InlineKeyboard } from "grammy";
 import "dotenv/config";
 import { constructUrl } from "../utils/app-url";
+import { botConfig } from "../config/bot";
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_API_KEY;
-const EXTERNAL_URL = constructUrl({ botName: "OmniTransferBot", uid: "123" });
-const GAME_URL = "https://t.me/OmniTransferBot";
-const GAME_NAME = "minter";
+const TELEGRAM_BOT_TOKEN = botConfig.TELEGRAM_BOT_TOKEN;
+const GAME_NAME = botConfig.APP_NAME;
 
 const bot = new Bot(TELEGRAM_BOT_TOKEN || "");
 
@@ -68,11 +67,11 @@ bot.command("info", async (ctx) => {
 });
 
 // Callback query for inline game button
-bot.on("callback_query:game_short_name", async (ctx) => {
-  await ctx.answerCallbackQuery({ url: EXTERNAL_URL });
+// bot.on("callback_query:game_short_name", async (ctx) => {
+//   await ctx.answerCallbackQuery({ url: EXTERNAL_URL });
 
-  console.log("Callback function called");
-});
+//   console.log("Callback function called");
+// });
 
 const startBot = async () => {
   try {

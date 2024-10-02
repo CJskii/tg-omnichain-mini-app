@@ -1,3 +1,5 @@
+import { serverConfig } from "../config/server";
+
 export function generateTransactionJson(txType: string, uid: string) {
   if (txType === "transaction") {
     return {
@@ -43,11 +45,12 @@ export function generateBridgeUrl(
   txType: string,
   uid: string
 ) {
-  const callbackUrl = `http://localhost:3001/api/transaction-callback`;
+  const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/${uid}?txType=${txType}`;
 
-  const sourceUrl = `http://localhost:3001/api/transaction/${uid}?txType=${txType}`;
-
-  return `http://wallet-bridge.s3-website-us-east-1.amazonaws.com?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
+  return `${
+    serverConfig.frontendBaseUrl
+  }/?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
     sourceUrl
   )}&callback=${encodeURIComponent(callbackUrl)}`;
 }
