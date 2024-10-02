@@ -1,37 +1,42 @@
 "use client";
 import { useState } from "react";
 import { useQueryParams } from "@/context/QueryParamsContext";
+import { Button, Cell, Section, Typography } from "@telegram-apps/telegram-ui";
+import { postEvent } from "@telegram-apps/sdk-react";
 
 function TransactionInitiator() {
   const { botName, uid } = useQueryParams();
   const [status, setStatus] = useState<string | null>(null);
-  const [params, setParams] = useState<Record<string, string>>({});
+  const [bridgeUrl, setBridgeUrl] = useState<string | null>(null);
 
   const initiateTransaction = async () => {
     if (!botName || !uid) return;
 
     try {
-      const txType = "transaction"; // Update as needed
+      const txType = "transaction";
 
-      // Ensure required parameters are present
       if (!botName || !txType || !uid) {
         console.error("Missing required query parameters");
         setStatus("Missing required query parameters.");
-        setParams({ botName, txType, uid });
         return;
       }
 
-      // Prepare the request body with required parameters
-      const requestBody = { botName, txType, uid };
+      console.log(
+        `Initiating transaction for bot ${botName} with UID ${uid} and type ${txType}`
+      );
 
       const response = await fetch(
-        "http://localhost:3001/api/generate-bridge-url",
+        `${
+          process.env.ENVIROMENT == "production"
+            ? process.env.PROD_API_URL
+            : process.env.LOCAL_API_URL || "http://localhost:3001"
+        }/api/generate-bridge-url/`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify({ botName, txType, uid }),
         }
       );
 
@@ -40,24 +45,38 @@ function TransactionInitiator() {
       }
 
       const { bridgeUrl } = await response.json();
-      console.log("Bridge URL:", bridgeUrl);
 
-      // Open the bridge URL in a new tab
-      window.open(bridgeUrl, "_blank");
+      setBridgeUrl(bridgeUrl);
+
+      postEvent("web_app_open_link", { url: bridgeUrl });
+
       setStatus(
         "Transaction initiated. Check the new tab for further actions."
       );
     } catch (error) {
       console.error("Failed to initiate transaction:", error);
-      setStatus("Failed to initiate transaction.");
+      setStatus("Failed to initiate transaction." + (error as Error).message);
     }
   };
 
   return (
-    <div>
-      <button onClick={initiateTransaction}>Sign Transaction</button>
-      {status && <p>{status}</p>}
-    </div>
+    <Section>
+      <Cell title="Transaction Initiator">
+        <Typography>
+          This component initiates a transaction with the bot name and UID
+          provided in the URL query parameters.
+        </Typography>
+      </Cell>
+
+      <Cell>
+        <Button onClick={initiateTransaction}>Sign Transaction</Button>
+      </Cell>
+
+      {/* <Cell subtitle="Transaction Status">{status}</Cell> */}
+      <Cell subtitle="Generated Bridge URL">{bridgeUrl}</Cell>
+
+      {status && <Cell>{status}</Cell>}
+    </Section>
   );
 }
 

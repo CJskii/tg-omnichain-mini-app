@@ -1,35 +1,32 @@
 "use client";
 
-import { Section, Cell, Image, List, Button } from "@telegram-apps/telegram-ui";
+import { Section, Cell, Image, List } from "@telegram-apps/telegram-ui";
 
 import { Link } from "@/components/Link/Link";
 
 import tonSvg from "./_assets/ton.svg";
-
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useQueryParams } from "@/context/QueryParamsContext";
 
 export default function Home() {
-  const searchParams = useSearchParams();
-  const botName = searchParams.get("botName");
-  const uid = searchParams.get("uid");
-
-  const router = useRouter();
-  const pathname = usePathname();
+  const { botName, uid } = useQueryParams();
 
   return (
     <List>
-      <Link href="/connect">
-        <Button>Go to Connect</Button>
-      </Link>
       <Section
         header="Features"
         footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
       >
+        <Link href="/connect">
+          <Cell>Connect EVM Wallet</Cell>
+        </Link>
         <Link href="/ton-connect">
           <Cell
             before={
-              <Image src={tonSvg.src} style={{ backgroundColor: "#007AFF" }} />
+              <Image
+                src={tonSvg.src}
+                alt="TON logo"
+                style={{ backgroundColor: "#007AFF" }}
+              />
             }
             subtitle="Connect your TON wallet"
           >
@@ -38,11 +35,8 @@ export default function Home() {
         </Link>
       </Section>
       <Section>
-        {/* // show bot name and uid */}
-
         {botName && <Cell subtitle="Bot Name">{botName}</Cell>}
-        {uid && <Cell subtitle="User ID">{uid}</Cell>}
-        {pathname && <Cell subtitle="Current Pathname">{pathname}</Cell>}
+        {uid && <Cell subtitle="Telegram chat ID">{uid}</Cell>}
       </Section>
       <Section
         header="Application Launch Data"

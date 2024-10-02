@@ -1,4 +1,4 @@
-"use client"; // Ensure this is a client-side component
+"use client";
 
 import {
   createContext,
@@ -9,7 +9,6 @@ import {
 } from "react";
 import { useSearchParams } from "next/navigation";
 
-// Define the shape of the context data
 interface QueryParamsContextType {
   botName: string | null;
   uid: string | null;
@@ -17,19 +16,16 @@ interface QueryParamsContextType {
   setUid: (uid: string) => void;
 }
 
-// Create the context with default values
 const QueryParamsContext = createContext<QueryParamsContextType | undefined>(
   undefined
 );
 
-// Create a provider component
 export function QueryParamsProvider({ children }: { children: ReactNode }) {
-  const [botName, setBotName] = useState<string | null>(null);
-  const [uid, setUid] = useState<string | null>(null);
+  const [botName, setBotName] = useState<string | null>("OmniTransferBot");
+  const [uid, setUid] = useState<string | null>("123456789");
 
   const searchParams = useSearchParams();
 
-  // Initialize the context state from URL parameters on the first render
   useEffect(() => {
     const initialBotName = searchParams.get("botName");
     const initialUid = searchParams.get("uid");
@@ -45,7 +41,6 @@ export function QueryParamsProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook to use the QueryParamsContext
 export function useQueryParams() {
   const context = useContext(QueryParamsContext);
   if (!context) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { Cell } from "@telegram-apps/telegram-ui";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
@@ -22,9 +23,9 @@ function TransactionStatus({ chatId }: { chatId: string }) {
   }, [chatId]);
 
   return (
-    <div>
+    <Cell subtitle="Transaction Status">
       {status ? <p>{status}</p> : <p>Waiting for transaction status...</p>}
-    </div>
+    </Cell>
   );
 }
 
