@@ -54,3 +54,20 @@ export function generateBridgeUrl(
     sourceUrl
   )}&callback=${encodeURIComponent(callbackUrl)}`;
 }
+
+export function generateMintUrl(
+  botName: string,
+  chainId: number,
+  address: string,
+  uid: string
+) {
+  const txType = "mint";
+  const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/${uid}?txType=${txType}&chainId=${chainId}&address=${address}`;
+
+  return `${
+    serverConfig.web3BridgeBaseUrl
+  }/?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
+    sourceUrl
+  )}&callback=${encodeURIComponent(callbackUrl)}`;
+}
