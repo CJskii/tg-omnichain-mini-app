@@ -11,6 +11,8 @@ import { useAccount } from "wagmi";
 import { getSchemaError, sendEvent } from "@/utils";
 import { JsonEditor } from "json-edit-react";
 
+import { buildRequestBody } from "@/utils/build-request-body";
+
 const HomePage: NextPage = () => {
   const { isConnected } = useAccount();
   const [transactionData, setTransactionData] = useState<WriteContractData>();
@@ -21,31 +23,67 @@ const HomePage: NextPage = () => {
   const [uid, setUid] = useState<string | undefined>();
   const [operationType, setOperationType] = useState<string>("");
   const [botName, setBotName] = useState<string>("");
+  const [source, setSource] = useState<string>("");
+
+  const [endpointType, setEndpointType] = useState<string>("");
 
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search);
     const source = queryParameters.get("source") as string;
+
     setBotName(queryParameters.get("botName") as string);
     setUid(queryParameters.get("uid") as string);
+    setSource(queryParameters.get("source") as string);
     setCallbackEndpoint(queryParameters.get("callback") as string);
+    setOperationType(queryParameters.get("type") as string);
 
     const actionType =
       queryParameters.get("type") === "signature" ? "signature" : "transaction";
     setOperationType(actionType);
 
-    fetch(source)
-      .then((response) => response.json())
+    const endpointType = source.split("/")[5];
+    setEndpointType(endpointType);
+
+    const sourceUrl = new URL(source);
+    const sourceParams = new URLSearchParams(sourceUrl.search);
+
+    const chainId = sourceParams.get("chainId");
+    const address = sourceParams.get("address");
+
+    const { requestBody } = buildRequestBody({
+      operationType: endpointType,
+      uid: uid || "",
+      chainId: Number(chainId),
+      address: address || "",
+      setSchemaError,
+    });
+
+    const response = fetch(source, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    response
+      .then((res) => res.json())
       .then((data) => {
         const error = getSchemaError(actionType, data);
         if (error) {
           setSchemaError(error);
+          return;
         } else {
-          actionType === "signature"
-            ? setSignMessageData(data)
-            : setTransactionData(data);
+          if (endpointType === "mint") {
+            setTransactionData(data);
+          } else if (endpointType === "signature") {
+            setSignMessageData(data);
+          }
         }
       })
+
       .catch((error) => {
+        console.error("Failed to fetch transaction data", error);
         setSchemaError(error);
       });
   }, []);
@@ -79,6 +117,7 @@ const HomePage: NextPage = () => {
                 abi={transactionData.abi}
                 functionName={transactionData.functionName}
                 args={transactionData.args}
+                endpointType={endpointType}
                 sendEvent={(data: any) =>
                   sendEvent(uid, callbackEndpoint, onCallbackError, {
                     ...data,

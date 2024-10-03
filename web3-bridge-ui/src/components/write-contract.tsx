@@ -5,8 +5,10 @@ import {
   useWaitForTransactionReceipt,
   useAccount,
   useSwitchChain,
+  useReadContract,
 } from "wagmi";
 import { parseAbi } from "viem";
+import { useState } from "react";
 
 import { Button } from "./ui/button";
 import { Typography } from "./ui/typography";
@@ -22,15 +24,35 @@ export interface WriteContractData {
 type WriteContractProps = WriteContractData & {
   uid: string;
   sendEvent: (event: any) => void;
+  endpointType: string;
 };
 
 export function WriteContract(data: WriteContractProps) {
-  const { sendEvent } = data;
+  const { sendEvent, endpointType, uid } = data;
   const { data: hash, error, isPending, writeContract } = useWriteContract();
 
   const { switchChain } = useSwitchChain();
 
+  const [fee, setFee] = useState<string | undefined>();
+
   const account = useAccount();
+
+  if (endpointType === "mint") {
+    const feeAbi = ["function fee() view returns (uint256)"];
+
+    const { data: mintData } = useReadContract({
+      address: data.address,
+      abi: parseAbi(feeAbi),
+      functionName: "fee",
+      chainId: data.chainId,
+    });
+
+    useEffect(() => {
+      if (mintData) {
+        setFee(mintData.toString());
+      }
+    }, [mintData]);
+  }
 
   const isCorrectChain = account?.chainId === data.chainId;
 
@@ -41,6 +63,7 @@ export function WriteContract(data: WriteContractProps) {
       functionName: data.functionName,
       args: data.args,
       chainId: data.chainId,
+      value: fee ? BigInt(fee) : undefined,
     });
   }
 
