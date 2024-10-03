@@ -11,8 +11,6 @@ import { useAccount } from "wagmi";
 import { getSchemaError, sendEvent } from "@/utils";
 import { JsonEditor } from "json-edit-react";
 
-import { buildRequestBody } from "@/utils/build-request-body";
-
 const HomePage: NextPage = () => {
   const { isConnected } = useAccount();
   const account = useAccount();
@@ -29,65 +27,105 @@ const HomePage: NextPage = () => {
   const [endpointType, setEndpointType] = useState<string>("");
 
   useEffect(() => {
-    const queryParameters = new URLSearchParams(window.location.search);
-    const source = queryParameters.get("source") as string;
+    try {
+      const queryParameters = new URLSearchParams(window.location.search);
+      const source = queryParameters.get("source");
+      const botName = queryParameters.get("botName");
+      const uid = queryParameters.get("uid");
+      const callback = queryParameters.get("callback");
+      const operationType = queryParameters.get("type") || "transaction";
+      const action = queryParameters.get("action") || "transaction";
 
-    setBotName(queryParameters.get("botName") as string);
-    setUid(queryParameters.get("uid") as string);
-    setSource(queryParameters.get("source") as string);
-    setCallbackEndpoint(queryParameters.get("callback") as string);
-    setOperationType(queryParameters.get("type") as string);
+      setBotName(botName || "");
+      setUid(uid || "");
+      setSource(source || "");
+      setCallbackEndpoint(callback || "");
+      setOperationType(operationType);
 
-    const actionType =
-      queryParameters.get("type") === "signature" ? "signature" : "transaction";
-    setOperationType(actionType);
+      if (!source) {
+        console.warn("Missing source URL");
+        setSchemaError("Source URL is missing.");
+        return;
+      }
 
-    const endpointType = source.split("/")[5];
-    setEndpointType(endpointType);
+      let chainId, address, spenderAddress;
+      try {
+        const sourceUrl = new URL(source);
+        const sourceParams = new URLSearchParams(sourceUrl.search);
+        chainId = sourceParams.get("chainId");
+        address = sourceParams.get("address");
+        spenderAddress = sourceParams.get("spenderAddress");
+      } catch (e) {
+        console.warn("Error parsing source URL parameters:", e);
+        setSchemaError("Invalid source URL parameters.");
+        return;
+      }
 
-    const sourceUrl = new URL(source);
-    const sourceParams = new URLSearchParams(sourceUrl.search);
+      setEndpointType(action);
 
-    const chainId = sourceParams.get("chainId");
-    const address = sourceParams.get("address");
-
-    const { requestBody } = buildRequestBody({
-      operationType: endpointType,
-      uid: uid || "",
-      chainId: Number(chainId),
-      address: address || "",
-      spenderAddress: account?.address || "",
-      setSchemaError,
-    });
-
-    const response = fetch(source, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    response
-      .then((res) => res.json())
-      .then((data) => {
-        const error = getSchemaError(actionType, data);
-        if (error) {
-          setSchemaError(error);
+      let requestBody: any;
+      switch (action) {
+        case "mint":
+          requestBody = {
+            chainId: chainId ? Number(chainId) : undefined,
+            address: address || "",
+          };
+          break;
+        case "approve":
+          requestBody = {
+            chainId: chainId ? Number(chainId) : undefined,
+            address: address || "",
+            spenderAddress: spenderAddress || account?.address || "",
+          };
+          break;
+        default:
+          console.warn("Invalid action type.");
+          setSchemaError("Invalid action type.");
           return;
-        } else {
-          if (endpointType === "mint") {
+      }
+
+      console.log("Request body:", requestBody);
+
+      if (!requestBody) {
+        console.warn("Invalid request body.");
+        setSchemaError("Invalid request body.");
+        return;
+      }
+
+      fetch(source, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          const error = getSchemaError(operationType, data);
+          if (error) {
+            setSchemaError(error);
+            return;
+          }
+
+          if (action === "mint" || action === "approve") {
             setTransactionData(data);
-          } else if (endpointType === "signature") {
+          } else if (action === "signature") {
             setSignMessageData(data);
           }
-        }
-      })
-
-      .catch((error) => {
-        console.error("Failed to fetch transaction data", error);
-        setSchemaError(error);
-      });
+        })
+        .catch((error) => {
+          console.error("Failed to fetch transaction data:", error);
+          setSchemaError("Failed to fetch transaction data.");
+        });
+    } catch (e) {
+      console.error("An error occurred in useEffect:", e);
+      setSchemaError("An unexpected error occurred.");
+    }
   }, []);
 
   const onCallbackError = (error: any) => {

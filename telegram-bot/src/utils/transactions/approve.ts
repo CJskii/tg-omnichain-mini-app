@@ -30,15 +30,26 @@ interface approveUrlType {
   botName: string;
   uid: string;
   txType: string;
+  chainId: number;
+  address: string;
+  spenderAddress: string;
 }
 
-export function generateApproveUrl({ botName, uid, txType }: approveUrlType) {
+export function generateApproveUrl({
+  botName,
+  uid,
+  txType,
+  chainId,
+  address,
+  spenderAddress,
+}: approveUrlType) {
+  const action = "approve";
   const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
-  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/approve/${uid}?txType=${txType}`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/approve/${uid}?chainId=${chainId}&address=${address}&spenderAddress=${spenderAddress}`;
 
   return `${
     serverConfig.web3BridgeBaseUrl
-  }/?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
+  }/?botName=${botName}&txType=${txType}&uid=${uid}&action=${action}&source=${encodeURIComponent(
     sourceUrl
   )}&callback=${encodeURIComponent(callbackUrl)}`;
 }

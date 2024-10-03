@@ -8,22 +8,29 @@ function TransactionInitiator() {
   const { botName, uid } = useQueryParams();
   const [status, setStatus] = useState<string | null>(null);
   const [bridgeUrl, setBridgeUrl] = useState<string | null>(null);
+  const [address, setAddress] = useState<string>(
+    "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
+  );
+  const [spenderAddress, setSpenderAddress] = useState<string>(
+    "0x4a89caAE3daf3Ec08823479dD2389cE34f0E6c96"
+  );
+  const [chainId, setChainId] = useState<string>("324");
+  const [txType, setTxType] = useState<string>("transaction");
 
   const initiateTransaction = async () => {
-    if (!botName || !uid) return;
-
     try {
-      const txType = "transaction";
-
-      if (!botName || !txType || !uid) {
+      if (
+        !botName ||
+        !txType ||
+        !uid ||
+        !chainId ||
+        !address ||
+        !spenderAddress
+      ) {
         console.error("Missing required query parameters");
         setStatus("Missing required query parameters.");
         return;
       }
-
-      console.log(
-        `Initiating transaction for bot ${botName} with UID ${uid} and type ${txType}`
-      );
 
       const response = await fetch(
         `${
@@ -36,7 +43,14 @@ function TransactionInitiator() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ botName, txType, uid }),
+          body: JSON.stringify({
+            botName,
+            txType,
+            uid,
+            chainId,
+            address,
+            spenderAddress,
+          }),
         }
       );
 
@@ -44,11 +58,13 @@ function TransactionInitiator() {
         throw new Error("Failed to generate bridge URL");
       }
 
-      const { bridgeUrl } = await response.json();
+      const { approveUrl } = await response.json();
 
-      setBridgeUrl(bridgeUrl);
+      console.log("Generated approve URL:", approveUrl);
 
-      postEvent("web_app_open_link", { url: bridgeUrl });
+      setBridgeUrl(approveUrl);
+
+      postEvent("web_app_open_link", { url: approveUrl });
 
       setStatus(
         "Transaction initiated. Check the new tab for further actions."

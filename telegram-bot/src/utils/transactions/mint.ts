@@ -33,12 +33,13 @@ export function generateMintUrl({
   uid,
   txType,
 }: mintUrlType) {
+  const action = "mint";
   const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
-  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/mint/${uid}?txType=${txType}&chainId=${chainId}&address=${address}`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/mint/${uid}?&chainId=${chainId}&address=${address}`;
 
   return `${
     serverConfig.web3BridgeBaseUrl
-  }/?botName=${botName}&type=${txType}&uid=${uid}&source=${encodeURIComponent(
+  }/?botName=${botName}&txType=${txType}&uid=${uid}&action=${action}&source=${encodeURIComponent(
     sourceUrl
   )}&callback=${encodeURIComponent(callbackUrl)}`;
 }
