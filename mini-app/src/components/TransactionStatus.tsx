@@ -4,7 +4,11 @@ import { Cell } from "@telegram-apps/telegram-ui";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001"); // Update as needed
+const socket = io(
+  process.env.NEXT_PUBLIC_ENVIROMENT == "production"
+    ? process.env.NEXT_PUBLIC_PROD_API_URL
+    : process.env.NEXT_PUBLIC_LOCAL_API_URL || "http://localhost:3001"
+);
 
 function TransactionStatus({ chatId }: { chatId: string }) {
   const [status, setStatus] = useState<string | null>(null);
