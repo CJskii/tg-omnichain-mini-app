@@ -15,6 +15,7 @@ import { buildRequestBody } from "@/utils/build-request-body";
 
 const HomePage: NextPage = () => {
   const { isConnected } = useAccount();
+  const account = useAccount();
   const [transactionData, setTransactionData] = useState<WriteContractData>();
   const [signMessageData, setSignMessageData] = useState<SignMessageProps>();
   const [callbackEndpoint, setCallbackEndpoint] = useState("");
@@ -55,6 +56,7 @@ const HomePage: NextPage = () => {
       uid: uid || "",
       chainId: Number(chainId),
       address: address || "",
+      spenderAddress: account?.address || "",
       setSchemaError,
     });
 

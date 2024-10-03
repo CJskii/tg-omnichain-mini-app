@@ -30,7 +30,7 @@ function TransactionInitiator() {
           process.env.NEXT_PUBLIC_ENVIROMENT == "production"
             ? process.env.NEXT_PUBLIC_PROD_API_URL
             : process.env.NEXT_PUBLIC_LOCAL_API_URL || "http://localhost:3001"
-        }/api/generate-bridge-url/`,
+        }/api/generate-url/approve/`,
         {
           method: "POST",
           headers: {

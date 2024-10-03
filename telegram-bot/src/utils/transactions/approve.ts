@@ -6,17 +6,23 @@ interface approveTransaction {
   spenderAddress: string;
 }
 
+// TODO: Make chainId, address, and spenderAddress required fields
+// TODO: Request with default values from telegram web app UI
+
 export function generateApproveTransactionJson({
   chainId,
   address,
   spenderAddress,
 }: approveTransaction) {
   return {
-    chainId: chainId,
-    address: address,
+    chainId: chainId || "324",
+    address: address || "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C",
     abi: ["function approve(address spender, uint256 value)"],
     functionName: "approve",
-    args: [spenderAddress, "456"],
+    args: [
+      spenderAddress || "0x4a89caAE3daf3Ec08823479dD2389cE34f0E6c96",
+      "456",
+    ],
   };
 }
 
