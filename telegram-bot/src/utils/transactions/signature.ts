@@ -60,7 +60,7 @@ export function generateSignatureUrl({
   txType,
 }: signatureUrlType) {
   const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
-  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/${uid}?txType=${txType}`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/signature/${uid}?txType=${txType}`;
 
   return `${
     serverConfig.web3BridgeBaseUrl

@@ -34,7 +34,7 @@ export function generateMintUrl({
   txType,
 }: mintUrlType) {
   const callbackUrl = `${serverConfig.callbackBaseUrl}/api/transaction-callback`;
-  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/${uid}?txType=${txType}&chainId=${chainId}&address=${address}`;
+  const sourceUrl = `${serverConfig.sourceBaseUrl}/api/transaction/mint/${uid}?txType=${txType}&chainId=${chainId}&address=${address}`;
 
   return `${
     serverConfig.web3BridgeBaseUrl
