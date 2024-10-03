@@ -45,4 +45,9 @@ export function initializeRoutes(app: Express, io: SocketServer) {
 
     res.status(200).send("Callback processed");
   });
+
+  app.post("/api/test", (req, res) => {
+    console.log("Test route hit");
+    res.status(200).send("Test route hit");
+  });
 }

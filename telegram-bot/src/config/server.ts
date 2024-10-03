@@ -16,7 +16,6 @@ const config: serverConfigType = {
       "http://localhost:3000",
       "https://omni.loca.lt",
       "http://localhost:3002",
-      "https://cowbird-fun-ostrich.ngrok-free.app",
     ],
     port: 3001,
     callbackBaseUrl: "http://localhost:3001", // callback server URL
@@ -24,7 +23,10 @@ const config: serverConfigType = {
     web3BridgeBaseUrl: "http://localhost:3002", // web3 bridge frontend URL
   },
   production: {
-    allowedOrigins: [process.env.TELEGRAM_APP_EXTERNAL_URL || ""],
+    allowedOrigins: [
+      process.env.TELEGRAM_APP_EXTERNAL_URL,
+      process.env.BRIDGE_URL,
+    ],
     port: process.env.PORT || 3001,
     callbackBaseUrl: process.env.NODE_SERVER_URL, // callback server URL
     sourceBaseUrl: process.env.NODE_SERVER_URL, // tx source json server URL
