@@ -6,6 +6,7 @@ import {
   optimism,
   polygon,
   zkSync,
+  bsc,
   sepolia,
 } from "wagmi/chains";
 
@@ -18,6 +19,7 @@ export const config = getDefaultConfig({
     optimism,
     arbitrum,
     base,
+    bsc,
     zkSync,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
   ],
