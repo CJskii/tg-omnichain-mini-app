@@ -61,11 +61,8 @@ function TransactionInitiator() {
 
   return (
     <Section>
-      <Cell title="Transaction Initiator">
-        <Typography>
-          This component initiates a transaction with the bot name and UID
-          provided in the URL query parameters.
-        </Typography>
+      <Cell subtitle="Description">
+        Initiates a transaction using Web3 Bridge.
       </Cell>
 
       <Cell>
