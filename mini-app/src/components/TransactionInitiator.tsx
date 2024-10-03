@@ -30,7 +30,7 @@ function TransactionInitiator() {
           process.env.NEXT_PUBLIC_ENVIROMENT == "production"
             ? process.env.NEXT_PUBLIC_PROD_API_URL
             : process.env.NEXT_PUBLIC_LOCAL_API_URL || "http://localhost:3001"
-        }/api/generate-bridge-url/`,
+        }/api/generate-url/approve/`,
         {
           method: "POST",
           headers: {
@@ -61,11 +61,8 @@ function TransactionInitiator() {
 
   return (
     <Section>
-      <Cell title="Transaction Initiator">
-        <Typography>
-          This component initiates a transaction with the bot name and UID
-          provided in the URL query parameters.
-        </Typography>
+      <Cell subtitle="Description">
+        Initiates a transaction using Web3 Bridge.
       </Cell>
 
       <Cell>
