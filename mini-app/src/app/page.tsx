@@ -13,13 +13,16 @@ import { useInitData } from "@telegram-apps/sdk-react";
 
 import ethereumSvg from "./_assets/ethereum.svg";
 import leafSvg from "./_assets/leaf.svg";
+import bridgeSvg from "./_assets/bridge.svg";
 
 import { MintModal } from "@/components/Modal/MintModal";
 import { ApproveModal } from "@/components/Modal/ApproveModal";
+import { BridgeModal } from "@/components/Modal/BridgeModal";
 
 export default function Home() {
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
 
   const initData = useInitData();
@@ -46,6 +49,10 @@ export default function Home() {
       <ApproveModal
         open={isApproveModalOpen}
         onOpenChange={setIsApproveModalOpen}
+      />
+      <BridgeModal
+        open={isBridgeModalOpen}
+        onOpenChange={setIsBridgeModalOpen}
       />
       <Section header="Features">
         <Cell
@@ -74,6 +81,20 @@ export default function Home() {
           onClick={() => setIsMintModalOpen(true)}
         >
           Mint
+        </Cell>
+
+        <Cell
+          before={
+            <Image
+              src={bridgeSvg.src}
+              alt="Bridge logo"
+              style={{ backgroundColor: "#FF9500" }}
+            />
+          }
+          subtitle="Cross chain transfer of your NFT"
+          onClick={() => setIsBridgeModalOpen(true)}
+        >
+          Bridge
         </Cell>
 
         {/* <Link href="/component-test">
