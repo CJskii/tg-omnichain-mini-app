@@ -14,7 +14,6 @@ function TransactionStatus({ chatId }: { chatId: string }) {
   const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    // Listen for transaction updates
     socket.on(`transactionUpdate:${chatId}`, (data) => {
       setStatus(
         `Transaction Status: ${data.status}, Hash: ${data.transactionHash}`
@@ -26,11 +25,7 @@ function TransactionStatus({ chatId }: { chatId: string }) {
     };
   }, [chatId]);
 
-  return (
-    <Cell subtitle="Transaction Status">
-      {status ? <p>{status}</p> : <p>Waiting for transaction status...</p>}
-    </Cell>
-  );
+  return status ? <Cell subhead="Transaction Status">{status}</Cell> : null;
 }
 
 export default TransactionStatus;
