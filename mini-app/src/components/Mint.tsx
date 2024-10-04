@@ -12,7 +12,7 @@ interface MintProps {
   address: string;
 }
 
-export default function MintPage() {
+export function Mint() {
   const { botName, uid } = useQueryParams();
 
   const mint = async ({ chainId, address }: MintProps) => {
@@ -60,10 +60,7 @@ export default function MintPage() {
   };
 
   return (
-    <Section
-      header="Minting section"
-      footer="Select one of the options above to start minting"
-    >
+    <Section header="Select a chain to mint">
       {deployedContracts.map(({ chainId, chainName, address, iconPath }) => (
         <Cell
           key={chainId}
