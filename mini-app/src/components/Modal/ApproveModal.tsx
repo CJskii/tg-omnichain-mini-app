@@ -1,11 +1,37 @@
 "use client";
+
 import { useState } from "react";
 import { useQueryParams } from "@/context/QueryParamsContext";
-import { Button, Cell, Section, Typography } from "@telegram-apps/telegram-ui";
+
+import TransactionStatus from "@/components/TransactionStatus";
+import {
+  Cell,
+  Section,
+  Modal,
+  Button,
+  Input,
+} from "@telegram-apps/telegram-ui";
 import { postEvent } from "@telegram-apps/sdk-react";
 
-function TransactionInitiator() {
+interface ApproveModalProps {
+  open: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+export const ApproveModal: React.FC<ApproveModalProps> = ({
+  open: isModalOpen,
+  onOpenChange: setIsModalOpen,
+}) => {
+  return (
+    <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Approve />
+    </Modal>
+  );
+};
+
+const Approve = () => {
   const { botName, uid } = useQueryParams();
+
   const [status, setStatus] = useState<string | null>(null);
   const [bridgeUrl, setBridgeUrl] = useState<string | null>(null);
   const [address, setAddress] = useState<string>(
@@ -71,26 +97,40 @@ function TransactionInitiator() {
       );
     } catch (error) {
       console.error("Failed to initiate transaction:", error);
-      setStatus("Failed to initiate transaction." + (error as Error).message);
+      setStatus("Failed to initiate transaction");
     }
   };
-
   return (
-    <Section>
-      <Cell subtitle="Description">
-        Initiates a transaction using Web3 Bridge.
-      </Cell>
+    <Section header="Approve transaction">
+      <>
+        {status && <Cell subhead="Status">{status}</Cell>}
+        <Cell subhead="Contract Name">USDT (TetherUSDT)</Cell>
+        <Cell subhead="Network">zkSync Era</Cell>
+        <Input
+          value={chainId}
+          onChange={(e) => setChainId(e.target.value)}
+          header="Chain ID"
+          disabled
+        />
+        <Input
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          header="Contract Address"
+          disabled
+        />
+        <Input
+          value={spenderAddress}
+          onChange={(e) => setSpenderAddress(e.target.value)}
+          header="Spender Address"
+          disabled
+        />
 
-      <Cell>
-        <Button onClick={initiateTransaction}>Sign Transaction</Button>
-      </Cell>
+        <Button onClick={initiateTransaction} stretched>
+          Sign Transaction
+        </Button>
 
-      {/* <Cell subtitle="Transaction Status">{status}</Cell> */}
-      <Cell subtitle="Generated Bridge URL">{bridgeUrl}</Cell>
-
-      {status && <Cell>{status}</Cell>}
+        {uid && <TransactionStatus chatId={uid} />}
+      </>
     </Section>
   );
-}
-
-export default TransactionInitiator;
+};
