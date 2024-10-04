@@ -1,130 +1,125 @@
-# Telegram Mini Apps Next.js Template
+# Mini-App
 
-This template demonstrates how developers can implement a web application on the Telegram
-Mini Apps platform using the following technologies and libraries:
+This is the frontend component of the Telegram Omnichain Mini-App, built using Next.js. The mini-app provides a user interface for interacting with various blockchain functionalities such as connecting an EVM wallet, minting NFTs, and performing various transactions.
 
-- [Next.js](https://nextjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [TON Connect](https://docs.ton.org/develop/dapps/ton-connect/overview)
-- [@telegram-apps SDK](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk)
-- [Telegram UI](https://github.com/Telegram-Mini-Apps/TelegramUI)
+## Table of Contents
 
-> The template was created using [pnpm](https://pnpm.io/). Therefore, it is required to use
-> it for this project as well. Using other package managers, you will receive a corresponding error.
+- [Getting Started](#getting-started)
+- [Scripts](#scripts)
+- [Dependencies](#dependencies)
+- [Environment Variables](#environment-variables)
+- [Features](#features)
+- [Usage](#usage)
+- [Folder Structure](#folder-structure)
 
-## Install Dependencies
+## Getting Started
 
-If you have just cloned this template, you should install the project dependencies using the
-command:
+### Prerequisites
 
-```Bash
-pnpm install
+- Node.js (>= 14.x)
+- npm (>= 6.x) or yarn
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/tg-omnichain-mini-app.git
+   ```
+2. **Navigate to the `mini-app` directory:**
+   ```bash
+   cd tg-omnichain-mini-app/mini-app
+   ```
+3. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+### Running the App
+
+To start the development server, use:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+This command will run the app on [http://localhost:3000](http://localhost:3000).
+
+### Building for Production
+
+To build the application for production, run:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+To start the production server:
+
+```bash
+npm run start
+# or
+yarn start
 ```
 
 ## Scripts
 
-This project contains the following scripts:
+- **`dev`**: Runs the app in development mode.
+- **`dev:https`**: Runs the app in development mode with HTTPS enabled.
+- **`build`**: Builds the app for production.
+- **`start`**: Starts the production server.
+- **`lint`**: Runs the linter.
 
-- `dev`. Runs the application in development mode.
-- `dev:https`. Runs the application in development mode using self-signed SSL certificate.
-- `build`. Builds the application for production.
-- `start`. Starts the Next.js server in production mode.
-- `lint`. Runs [eslint](https://eslint.org/) to ensure the code quality meets the required
-  standards.
+## Dependencies
 
-To run a script, use the `pnpm run` command:
+Here are the main dependencies used in the project:
 
-```Bash
-pnpm run {script}
-# Example: pnpm run build
-```
+- **[@telegram-apps/sdk-react](https://www.npmjs.com/package/@telegram-apps/sdk-react)**: SDK for integrating Telegram mini-apps into React.
+- **[@telegram-apps/telegram-ui](https://www.npmjs.com/package/@telegram-apps/telegram-ui)**: Provides UI components for the Telegram mini-apps.
+- **[@tonconnect/ui-react](https://www.npmjs.com/package/@tonconnect/ui-react)**: UI components for TON blockchain connectivity.
+- **[next](https://www.npmjs.com/package/next)**: React framework for building server-rendered applications.
+- **[react-icons](https://www.npmjs.com/package/react-icons)**: Provides popular icons as React components.
+- **[tailwindcss](https://www.npmjs.com/package/tailwindcss)**: Utility-first CSS framework for styling the application.
 
-## Create Bot and Mini App
+### Dev Dependencies
 
-Before you start, make sure you have already created a Telegram Bot. Here is
-a [comprehensive guide](https://docs.telegram-mini-apps.com/platform/creating-new-app) on how to
-do it.
+- **[@types/node](https://www.npmjs.com/package/@types/node)**: TypeScript definitions for Node.js.
+- **[@types/react](https://www.npmjs.com/package/@types/react)**: TypeScript definitions for React.
+- **[eslint](https://www.npmjs.com/package/eslint)**: Tool for identifying and fixing problems in JavaScript code.
+- **[tailwindcss](https://www.npmjs.com/package/tailwindcss)**: A utility-first CSS framework for custom designs.
 
-## Run
+## Environment Variables
 
-Although Mini Apps are designed to be opened
-within [Telegram applications](https://docs.telegram-mini-apps.com/platform/about#supported-applications),
-you can still develop and test them outside of Telegram during the development process.
+- **`.env.local`**: Environment-specific variables for local development.
 
-To run the application in the development mode, use the `dev` script:
+Make sure to set up the necessary environment variables in a `.env.local` file for proper integration with the Telegram SDK and blockchain APIs.
 
-```bash
-pnpm run dev
-```
+## Features
 
-After this, you will see a similar message in your terminal:
+- **EVM Wallet Connection**: Connects users' Ethereum Virtual Machine wallets using Web3 Bridge.
+- **Approve Transaction**: Allow user to approve token spending through smart contract.
+- **Minting NFTs**: Enables users to mint NFTs directly through the mini-app.
+- **Bridging NFTs**: Enables users to bridge minted NFTs through the mini-app
+- **UI Components**: Utilizes `@telegram-apps/telegram-ui` for a consistent user interface.
+- **Responsive Design**: Built with Tailwind CSS for a responsive and mobile-friendly interface.
 
-```bash
-▲ Next.js 14.2.3
-- Local:        http://localhost:3000
+## Usage
 
-✓ Starting...
-✓ Ready in 2.9s
-```
+- The application is integrated with the Telegram SDK to provide an enhanced user experience within the Telegram app environment.
+- Components from `@telegram-apps/telegram-ui` are used to build a consistent and familiar interface for users interacting with blockchain functionalities.
 
-To view the application, you need to open the `Local`
-link (`http://localhost:3000` in this example) in your browser.
+## Folder Structure
 
-It is important to note that some libraries in this template, such as `@telegram-apps/sdk`, are not
-intended for use outside of Telegram.
+- **`/pages`**: Next.js pages for routing.
+- **`/components`**: Reusable UI components.
+- **`/_assets`**: Static assets like images and SVGs.
+- **`/styles`**: Global and component-specific styles using Tailwind CSS.
 
-Nevertheless, they appear to function properly. This is because the `src/hooks/useTelegramMock.ts`
-file, which is imported in the application's `Root` component, employs the `mockTelegramEnv`
-function to simulate the Telegram environment. This trick convinces the application that it is
-running in a Telegram-based environment. Therefore, be cautious not to use this function in
-production mode unless you fully understand its implications.
+## Notes
 
-### Run Inside Telegram
-
-Although it is possible to run the application outside of Telegram, it is recommended to develop it
-within Telegram for the most accurate representation of its real-world functionality.
-
-To run the application inside Telegram, [@BotFather](https://t.me/botfather) requires an HTTPS link.
-
-This template already provides a solution.
-
-To retrieve a link with the HTTPS protocol, consider using the `dev:https` script:
-
-```bash
-$ pnpm run dev:https
-
-▲ Next.js 14.2.3
-- Local:        https://localhost:3000
-
-✓ Starting...
-✓ Ready in 2.4s
-```
-
-Visiting the `Local` link (`https://localhost:3000` in this example) in your
-browser, you will see the following warning:
-
-![SSL Warning](assets/ssl-warning.png)
-
-This browser warning is normal and can be safely ignored as long as the site is secure. Click
-the `Proceed to localhost (unsafe)` button to continue and view the application.
-
-Once the application is displayed correctly, submit the
-link `https://127.0.0.1:3000` (`https://localhost:3000` is considered as invalid by BotFather) as
-the Mini App link to [@BotFather](https://t.me/botfather). Then, navigate
-to [https://web.telegram.org/k/](https://web.telegram.org/k/), find your bot, and launch the
-Telegram Mini App. This approach provides the full development experience.
-
-## Deploy
-
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more
-details.
-
-## Useful Links
-
-- [Platform documentation](https://docs.telegram-mini-apps.com/)
-- [@telegram-apps/sdk-react documentation](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk-react)
-- [Telegram developers community chat](https://t.me/devs)
+- The application is built using Next.js 14.2.4, React 18, and TypeScript.
+- Tailwind CSS is used for styling to allow rapid UI development with utility classes.
