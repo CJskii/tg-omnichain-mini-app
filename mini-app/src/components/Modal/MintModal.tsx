@@ -35,7 +35,9 @@ export function Mint() {
   const { botName, uid } = useQueryParams();
 
   const [userSelection, setUserSelection] = useState<MintProps | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(
+    "Waiting for user selection"
+  );
 
   const mint = async ({ chainId, address }: MintProps) => {
     const contract = deployedContracts.find(
@@ -102,7 +104,10 @@ export function Mint() {
         <Cell
           key={chainId}
           subtitle={`Chain ID: ${chainId}`}
-          onClick={() => setUserSelection({ chainName, chainId, address })}
+          onClick={() => {
+            setUserSelection({ chainName, chainId, address });
+            setStatus("Ready to mint");
+          }}
           before={
             <Image src={iconPath} alt={chainName} width={36} height={36} />
           }
@@ -111,11 +116,13 @@ export function Mint() {
         </Cell>
       ))}
 
-      {userSelection && (
-        <Button stretched onClick={() => mint(userSelection)}>
-          Mint
-        </Button>
-      )}
+      <Button
+        stretched
+        onClick={userSelection ? () => mint(userSelection) : undefined}
+        disabled={!userSelection}
+      >
+        Mint
+      </Button>
 
       {uid && <TransactionStatus chatId={uid} />}
     </Section>

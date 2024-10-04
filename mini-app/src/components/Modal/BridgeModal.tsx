@@ -84,7 +84,7 @@ const Bridge = () => {
           disabled
         />
 
-        <Button onClick={initiateTransaction} stretched>
+        <Button onClick={initiateTransaction} stretched disabled>
           Sign Transaction
         </Button>
 
