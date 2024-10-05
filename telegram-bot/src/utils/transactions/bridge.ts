@@ -24,7 +24,7 @@ export function generateBridgeTransactionJson({
     chainId: chainId,
     address: address,
     abi: [
-      "function sendFrom(address _from, uint16 _dstChainId, bytes memory _toAddress, uint _tokenId, address payable _refundAddress, address _zroPaymentAddress, bytes memory _adapterParams) public payable virtual override",
+      "function sendFrom(address _from, uint16 _dstChainId, bytes _toAddress, uint256 _tokenId, address _refundAddress, address _zroPaymentAddress, bytes _adapterParams) external payable",
     ],
     functionName: "sendFrom",
     args: [
