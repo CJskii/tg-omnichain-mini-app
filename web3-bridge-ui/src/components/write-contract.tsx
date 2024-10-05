@@ -54,6 +54,33 @@ export function WriteContract(data: WriteContractProps) {
     }, [mintData]);
   }
 
+  if (endpointType === "bridge") {
+    const feeAbi = [
+      "function estimateSendFee(uint16 _dstChainId, bytes _toAddress, uint256 _tokenId, bool _useZro, bytes _adapterParams) external view returns (uint256 nativeFee, uint256 zroFee)",
+    ];
+
+    const { data: estimateSendFee }: { data: [BigInt, BigInt] | undefined } =
+      useReadContract({
+        address: data.address,
+        abi: parseAbi(feeAbi),
+        functionName: "estimateSendFee",
+        args: [
+          data.args[1], // _dstChainId
+          data.args[2], // _toAddress
+          data.args[3], // _tokenId
+          false, // _useZro
+          data.args[6], // _adapterParams
+        ],
+        chainId: data.chainId,
+      });
+
+    useEffect(() => {
+      if (estimateSendFee) {
+        setFee(estimateSendFee?.[0].toString());
+      }
+    }, [estimateSendFee]);
+  }
+
   const isCorrectChain = account?.chainId === data.chainId;
 
   async function submitTransaction() {

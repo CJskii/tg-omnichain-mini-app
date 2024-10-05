@@ -2,16 +2,11 @@
 
 import { useState } from "react";
 import { useQueryParams } from "@/context/QueryParamsContext";
-
 import TransactionStatus from "@/components/TransactionStatus";
-import {
-  Cell,
-  Section,
-  Modal,
-  Button,
-  Input,
-} from "@telegram-apps/telegram-ui";
+import { Section, Modal, Cell, Input } from "@telegram-apps/telegram-ui";
 import { postEvent } from "@telegram-apps/sdk-react";
+import StatusDisplay from "../DisplayData/StatusDisplay";
+import TransactionButton from "../Button/TransactionButton";
 
 interface ApproveModalProps {
   open: boolean;
@@ -21,38 +16,27 @@ interface ApproveModalProps {
 export const ApproveModal: React.FC<ApproveModalProps> = ({
   open: isModalOpen,
   onOpenChange: setIsModalOpen,
-}) => {
-  return (
-    <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
-      <Approve />
-    </Modal>
-  );
-};
+}) => (
+  <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+    <Approve />
+  </Modal>
+);
 
 const Approve = () => {
   const { botName, uid } = useQueryParams();
 
   const [status, setStatus] = useState<string | null>(null);
-  const [bridgeUrl, setBridgeUrl] = useState<string | null>(null);
-  const [address, setAddress] = useState<string>(
+  const [address] = useState<string>(
     "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
   );
-  const [spenderAddress, setSpenderAddress] = useState<string>(
+  const [spenderAddress] = useState<string>(
     "0x4a89caAE3daf3Ec08823479dD2389cE34f0E6c96"
   );
-  const [chainId, setChainId] = useState<string>("324");
-  const [txType, setTxType] = useState<string>("transaction");
+  const [chainId] = useState<string>("324");
 
   const initiateTransaction = async () => {
     try {
-      if (
-        !botName ||
-        !txType ||
-        !uid ||
-        !chainId ||
-        !address ||
-        !spenderAddress
-      ) {
+      if (!botName || !uid || !chainId || !address || !spenderAddress) {
         console.error("Missing required query parameters");
         setStatus("Missing required query parameters.");
         return;
@@ -60,7 +44,7 @@ const Approve = () => {
 
       const response = await fetch(
         `${
-          process.env.NEXT_PUBLIC_ENVIROMENT == "production"
+          process.env.NEXT_PUBLIC_ENVIROMENT === "production"
             ? process.env.NEXT_PUBLIC_PROD_API_URL
             : process.env.NEXT_PUBLIC_LOCAL_API_URL || "http://localhost:3001"
         }/api/generate-url/approve/`,
@@ -71,11 +55,11 @@ const Approve = () => {
           },
           body: JSON.stringify({
             botName,
-            txType,
             uid,
             chainId,
             address,
             spenderAddress,
+            txType: "transaction",
           }),
         }
       );
@@ -87,11 +71,7 @@ const Approve = () => {
       const { approveUrl } = await response.json();
 
       console.log("Generated approve URL:", approveUrl);
-
-      setBridgeUrl(approveUrl);
-
       postEvent("web_app_open_link", { url: approveUrl });
-
       setStatus(
         "Transaction initiated. Check the new tab for further actions."
       );
@@ -100,37 +80,17 @@ const Approve = () => {
       setStatus("Failed to initiate transaction");
     }
   };
+
   return (
     <Section header="Approve transaction">
-      <>
-        {status && <Cell subhead="Status">{status}</Cell>}
-        <Cell subhead="Contract Name">USDT (TetherUSDT)</Cell>
-        <Cell subhead="Network">zkSync Era</Cell>
-        <Input
-          value={chainId}
-          onChange={(e) => setChainId(e.target.value)}
-          header="Chain ID"
-          disabled
-        />
-        <Input
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          header="Contract Address"
-          disabled
-        />
-        <Input
-          value={spenderAddress}
-          onChange={(e) => setSpenderAddress(e.target.value)}
-          header="Spender Address"
-          disabled
-        />
-
-        <Button onClick={initiateTransaction} stretched>
-          Sign Transaction
-        </Button>
-
-        {uid && <TransactionStatus chatId={uid} />}
-      </>
+      <StatusDisplay status={status} />
+      <Cell subhead="Contract Name">USDT (TetherUSDT)</Cell>
+      <Cell subhead="Network">zkSync Era</Cell>
+      <Input value={chainId} header="Chain ID" disabled />
+      <Input value={address} header="Contract Address" disabled />
+      <Input value={spenderAddress} header="Spender Address" disabled />
+      <TransactionButton onClick={initiateTransaction} label="Approve" />
+      {uid && <TransactionStatus chatId={uid} />}
     </Section>
   );
 };
