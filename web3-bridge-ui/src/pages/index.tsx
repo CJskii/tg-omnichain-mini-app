@@ -35,6 +35,7 @@ const HomePage: NextPage = () => {
       const callback = queryParameters.get("callback");
       const operationType = queryParameters.get("type") || "transaction";
       const action = queryParameters.get("action") || "transaction";
+      const txType = queryParameters.get("txType");
 
       setBotName(botName || "");
       setUid(uid || "");
@@ -48,43 +49,61 @@ const HomePage: NextPage = () => {
         return;
       }
 
-      let chainId, address, spenderAddress;
+      let chainId,
+        address,
+        spenderAddress,
+        remoteChainId,
+        tokenId,
+        ownerAddress;
+
+      let requestBody = undefined;
+      setEndpointType(action);
+
       try {
         const sourceUrl = new URL(source);
         const sourceParams = new URLSearchParams(sourceUrl.search);
         chainId = sourceParams.get("chainId");
         address = sourceParams.get("address");
-        spenderAddress = sourceParams.get("spenderAddress");
+
+        switch (action) {
+          case "mint":
+            spenderAddress = sourceParams.get("spenderAddress");
+            requestBody = {
+              chainId: chainId ? Number(chainId) : undefined,
+              address: address || "",
+            };
+            break;
+          case "approve":
+            requestBody = {
+              chainId: chainId ? Number(chainId) : undefined,
+              address: address || "",
+              spenderAddress: spenderAddress || account?.address || "",
+            };
+            break;
+          case "bridge":
+            tokenId = sourceParams.get("tokenId");
+            remoteChainId = sourceParams.get("remoteChainId");
+            ownerAddress = sourceParams.get("ownerAddress");
+            requestBody = {
+              chainId: chainId ? Number(chainId) : undefined,
+              address: address || "",
+              ownerAddress: ownerAddress || account?.address || "",
+              remoteChainId: remoteChainId ? Number(remoteChainId) : undefined,
+              tokenId: tokenId || "",
+            };
+            break;
+          default:
+            console.warn("Invalid action type.");
+            setSchemaError("Invalid action type.");
+            return;
+        }
+
+        console.log("Request body:", requestBody);
       } catch (e) {
         console.warn("Error parsing source URL parameters:", e);
         setSchemaError("Invalid source URL parameters.");
         return;
       }
-
-      setEndpointType(action);
-
-      let requestBody: any;
-      switch (action) {
-        case "mint":
-          requestBody = {
-            chainId: chainId ? Number(chainId) : undefined,
-            address: address || "",
-          };
-          break;
-        case "approve":
-          requestBody = {
-            chainId: chainId ? Number(chainId) : undefined,
-            address: address || "",
-            spenderAddress: spenderAddress || account?.address || "",
-          };
-          break;
-        default:
-          console.warn("Invalid action type.");
-          setSchemaError("Invalid action type.");
-          return;
-      }
-
-      console.log("Request body:", requestBody);
 
       if (!requestBody) {
         console.warn("Invalid request body.");
@@ -112,9 +131,9 @@ const HomePage: NextPage = () => {
             return;
           }
 
-          if (action === "mint" || action === "approve") {
+          if (txType === "transaction") {
             setTransactionData(data);
-          } else if (action === "signature") {
+          } else if (txType === "signature") {
             setSignMessageData(data);
           }
         })
