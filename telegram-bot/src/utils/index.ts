@@ -12,6 +12,10 @@ import {
   generateSignatureTransactionJson,
   generateSignatureUrl,
 } from "./transactions/signature";
+import {
+  generateBridgeTransactionJson,
+  generateBridgeUrl,
+} from "./transactions/bridge";
 
 export {
   constructUrl,
@@ -22,4 +26,6 @@ export {
   generateMintUrl,
   generateSignatureTransactionJson,
   generateSignatureUrl,
+  generateBridgeTransactionJson,
+  generateBridgeUrl,
 };
