@@ -69,6 +69,8 @@ export function Mint() {
       }
 
       const { mintUrl } = await response.json();
+
+      console.log(`Mint URL: ${mintUrl}`);
       setStatus(`Transaction initiated. Check your wallet to confirm.`);
       postEvent("web_app_open_link", { url: mintUrl });
     } catch (error) {

@@ -59,6 +59,7 @@ const Approve = () => {
             chainId,
             address,
             spenderAddress,
+            txType: "transaction",
           }),
         }
       );
