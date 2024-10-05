@@ -18,10 +18,12 @@ src/
   │   │   ├── generate-url/
   │   │   │   ├── approve.ts
   │   │   │   ├── mint.ts
+  │   │   │   ├── bridge.ts
   │   │   │   ├── signature.ts
   │   │   │   └── index.ts
   │   │   ├── transaction/
   │   │   │   ├── approve.ts
+  │   │   │   ├── bridge.ts
   │   │   │   ├── mint.ts
   │   │   │   ├── signature.ts
   │   │   │   └── index.ts
@@ -29,6 +31,7 @@ src/
   └── utils/             # Utility functions
       ├── transactions/  # Transaction-related utilities
       │   ├── approve.ts
+      │   ├── bridge.ts
       │   ├── mint.ts
       │   ├── signature.ts
       ├── app-url.ts     # mini-app URL generation utilities
@@ -73,6 +76,19 @@ These endpoints are used to generate URLs for Web3 transactions, which can then 
   - `spenderAddress` (string): The address of the spender.
 - **Response**: Returns the generated URL for the approve transaction.
 
+#### POST `/api/generate-url/bridge`
+
+- **Description**: Generates a URL for a bridge transaction.
+- **Body Parameters**:
+  - `botName` (string): The name of the bot.
+  - `sourceChainId` (number): The ID of the blockchain network.
+  - `targetChainId` (number): The Layerzero V1 ID of the target network.
+  - `contractAddress` (string): The contract address.
+  - `ownerAddress` (string): The owner address of the NFT token.
+  - `uid` (string): Unique identifier for the transaction.
+  - `txType` (string): The type of transaction.
+- **Response**: Returns the generated URL for the bridge transaction.
+
 ### 2. Transaction Endpoints
 
 These endpoints are used to fetch transaction JSON data that will be executed through the Web3 bridge.
@@ -86,6 +102,19 @@ These endpoints are used to fetch transaction JSON data that will be executed th
   - `chainId` (number): The ID of the blockchain network.
   - `address` (string): The contract address.
 - **Response**: Returns the transaction JSON for minting.
+
+#### POST `/api/transaction/bridge/:uid`
+
+- **Description**: Fetches the JSON data for an approve transaction.
+- **URL Parameters**:
+  - `uid` (string): Unique identifier for the transaction.
+- **Body Parameters**:
+  - `chainId` (number): The ID of the blockchain network.
+  - `address` (string): The contract address.
+  - `tokenId` (string): The NFT ID from blockexplorer.
+  - `ownerAddress` (string): The address of the NFT owner.
+  - `remoteChainId` (number): The Layerzero V1 ID of the target network.
+- **Response**: Returns the transaction JSON for approving.
 
 #### POST `/api/transaction/approve/:uid`
 
